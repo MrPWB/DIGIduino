@@ -271,6 +271,8 @@ void loop() {
 //                  NORMAL MODE
 // ----------------------------------------------------------
 void handleNormalMode() {
+  updateBrightness();  // Helligkeit kontinuierlich aktualisieren
+  
   //check if min button is pressed, display date if it is
   if (minuteButton.pressedEvent) {
     watchState = SHOWDATE;
@@ -580,6 +582,20 @@ void isrWake() {
   }
   timeCombined = (hour * 100) + minute;
   yearCombined = year;
+  updateBrightness();  // Helligkeit basierend auf aktueller Uhrzeit setzen
+}
+
+// ----------------------------------------------------------
+//                Brightness management
+// ----------------------------------------------------------
+void updateBrightness() {
+  int currentHour = hour;  // Verwende die globale hour Variable
+  
+  if (currentHour >= 7 && currentHour < 21) {
+    sevseg.setBrightness(90);  // Tageshelligkeit (7:00 - 20:59)
+  } else {
+    sevseg.setBrightness(60);  // Nachthelligkeit (21:00 - 6:59)
+  }
 }
 
 // ----------------------------------------------------------
