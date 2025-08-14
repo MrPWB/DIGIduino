@@ -271,7 +271,7 @@ void loop() {
 //                  NORMAL MODE
 // ----------------------------------------------------------
 void handleNormalMode() {
-  updateBrightness();  // Helligkeit kontinuierlich aktualisieren
+ 
   
   //check if min button is pressed, display date if it is
   if (minuteButton.pressedEvent) {
