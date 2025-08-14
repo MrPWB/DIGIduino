@@ -182,7 +182,7 @@ void setup() {
                disableDecPoint);
 
   // Set a default brightness
-  sevseg.setBrightness(60);
+  sevseg.setBrightness(100);
 
   // ------------------ RTC Setup ------------------
   Rtc.Begin();
@@ -200,8 +200,8 @@ void setup() {
   unsigned long start = millis();
   static long vccMillivolts = readVcc();
   static int vccDisplay = vccMillivolts;
-  //vccMillivolts = readVcc();
-  //vccDisplay = vccMillivolts;
+  vccMillivolts = readVcc();
+  vccDisplay = vccMillivolts;
 
   while (millis() - start < 2000) {
     //sevseg.setChars("hey");
@@ -271,7 +271,7 @@ void loop() {
 //                  NORMAL MODE
 // ----------------------------------------------------------
 void handleNormalMode() {
- 
+//   updateBrightness();  // Helligkeit basierend auf aktueller Uhrzeit setzen
   
   //check if min button is pressed, display date if it is
   if (minuteButton.pressedEvent) {
@@ -582,7 +582,6 @@ void isrWake() {
   }
   timeCombined = (hour * 100) + minute;
   yearCombined = year;
-  updateBrightness();  // Helligkeit basierend auf aktueller Uhrzeit setzen
 }
 
 // ----------------------------------------------------------
