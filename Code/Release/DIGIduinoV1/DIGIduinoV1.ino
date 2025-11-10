@@ -312,7 +312,7 @@ void handleShowDateMode() {
   // Toggle every 1000ms (1 second)
   unsigned long currentMillis = millis();
   if (currentMillis - lastToggleTime >= 1000) {
-    stateDate = (stateDate + 1) % 3;
+    stateDate = (stateDate + 1) % 5;
     lastToggleTime = currentMillis;
   }
 
