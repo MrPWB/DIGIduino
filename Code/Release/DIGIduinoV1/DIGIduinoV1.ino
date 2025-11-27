@@ -198,8 +198,10 @@ void setup() {
 
   // Optional: briefly display "beta" (or "TPW") on startup
   unsigned long start = millis();
-  long vccMillivolts = readVcc();
-  int vccDisplay = vccMillivolts;
+  static long vccMillivolts = readVcc();
+  static int vccDisplay = vccMillivolts;
+  vccMillivolts = readVcc();
+  vccDisplay = vccMillivolts;
 
   while (millis() - start < 2000) {
     //sevseg.setChars("hey");
@@ -294,74 +296,58 @@ void handleNormalMode() {
 // ----------------------------------------------------------
 void handleShowDateMode() {
   static unsigned long lastToggleTime = 0;
-  static unsigned long lastVccSample = 0;
+  //static bool showingDate = true;
   static int stateDate = 0;
   static bool firstEntry = true;
-  static long vccMillivolts = 0;
-  static int vccDisplay = 0;
-  static int batPerc = 0;
-
-  unsigned long currentMillis = millis();
+  static long vccMillivolts = readVcc();
+  static int vccDisplay = vccMillivolts;
+  static float voltage = vccDisplay / 1000.0;
+  static int batPerc = 25;
 
   if (firstEntry) {
-    now = Rtc.GetDateTime();  // Take a fresh snapshot on entry
-    stateDate = 0;
-    lastToggleTime = currentMillis;
-    lastVccSample = 0;  // Force an immediate voltage sample
+    now = Rtc.GetDateTime();  // Refresh only once on entry
     firstEntry = false;
   }
 
-  if (lastVccSample == 0 || currentMillis - lastVccSample >= 1000) {
-    vccMillivolts = readVcc();
-    vccDisplay = vccMillivolts;
-    float voltage = vccMillivolts / 1000.0f;
-    batPerc = voltageToPercentage(voltage);
-    lastVccSample = currentMillis;
-  }
-
   // Toggle every 1000ms (1 second)
+  unsigned long currentMillis = millis();
   if (currentMillis - lastToggleTime >= 1000) {
     stateDate = (stateDate + 1) % 5;
     lastToggleTime = currentMillis;
-    if (stateDate == 0) {
-      now = Rtc.GetDateTime();  // Periodically refresh time/date while in this view
-    }
   }
 
   if (stateDate == 0) {
-    // Moonphase
+    //Moonphase
     byte moonPhase = getMoonPhase(now.Year(), now.Month(), now.Day());
     sevseg.setSegments(moonPhases[moonPhase]);
 
   } else if (stateDate == 1) {
-    // Date
+    //Date
     if (UKUS == true) {
       dateCombined = (now.Day() * 100) + now.Month();
     } else {
       dateCombined = (now.Month() * 100) + now.Day();
     }
 
-    sevseg.setNumber(dateCombined, 2);
+    sevseg.setNumber(dateCombined, 2);  // 1 = leading zeros
 
   } else if (stateDate == 2) {
-    // Year
+    //Year
     yearCombined = now.Year();
-    sevseg.setNumber(yearCombined);
+    sevseg.setNumber(yearCombined);  // 1 = leading zeros
 
   } else if (stateDate == 3) {
-    // Vcc
+    //Vcc
     sevseg.setNumber(vccDisplay, 3);
 
   } else if (stateDate == 4) {
-    // Battery percentage
+    //battery percentage
+    batPerc = voltageToPercentage(voltage);
     sevseg.setNumber(batPerc);
   }
 
-  // Button released → return to NORMAL state and allow re-initialization next time
+  // Button released → return to NORMAL state
   if (!minuteButton.pressed) {
-    firstEntry = true;
-    stateDate = 0;
-    lastToggleTime = currentMillis;
     watchState = NORMAL;
   }
 }
