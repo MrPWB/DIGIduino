@@ -182,7 +182,7 @@ void setup() {
                disableDecPoint);
 
   // Set a default brightness
-  sevseg.setBrightness(100);
+  sevseg.setBrightness(60);
 
   // ------------------ RTC Setup ------------------
   Rtc.Begin();
@@ -299,13 +299,18 @@ void handleShowDateMode() {
   //static bool showingDate = true;
   static int stateDate = 0;
   static bool firstEntry = true;
-  long vccMillivolts = readVcc();
-  int vccDisplay = vccMillivolts;
-  float voltage = vccDisplay / 1000.0;
-  int batPerc = 25;
+  long vccMillivolts;
+  int vccDisplay;
+  float voltage;
+  int batPerc;
+
 
   if (firstEntry) {
     now = Rtc.GetDateTime();  // Refresh only once on entry
+    vccMillivolts = readVcc();
+    vccDisplay = vccMillivolts;
+    voltage = vccDisplay / 1000.0;
+    batPerc = 25;
     firstEntry = false;
   }
 
