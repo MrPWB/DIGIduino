@@ -198,8 +198,8 @@ void setup() {
 
   // Optional: briefly display "beta" (or "TPW") on startup
   unsigned long start = millis();
-  static long vccMillivolts = readVcc();
-  static int vccDisplay = vccMillivolts;
+  long vccMillivolts = readVcc();
+  int vccDisplay = vccMillivolts;
   vccMillivolts = readVcc();
   vccDisplay = vccMillivolts;
 
@@ -299,10 +299,10 @@ void handleShowDateMode() {
   //static bool showingDate = true;
   static int stateDate = 0;
   static bool firstEntry = true;
-  static long vccMillivolts = readVcc();
-  static int vccDisplay = vccMillivolts;
-  static float voltage = vccDisplay / 1000.0;
-  static int batPerc = 25;
+  long vccMillivolts = readVcc();
+  int vccDisplay = vccMillivolts;
+  float voltage = vccDisplay / 1000.0;
+  int batPerc = 25;
 
   if (firstEntry) {
     now = Rtc.GetDateTime();  // Refresh only once on entry
