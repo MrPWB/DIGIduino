@@ -307,10 +307,13 @@ void handleShowDateMode() {
 
   if (firstEntry) {
     now = Rtc.GetDateTime();  // Refresh only once on entry
+    // Batterie
     vccMillivolts = readVcc();
     vccDisplay = vccMillivolts;
     voltage = vccDisplay / 1000.0;
     batPerc = 25;
+    // Mondphase
+    byte moonPhase = getMoonPhase(now.Year(), now.Month(), now.Day());
     firstEntry = false;
   }
 
@@ -323,7 +326,7 @@ void handleShowDateMode() {
 
   if (stateDate == 0) {
     //Moonphase
-    byte moonPhase = getMoonPhase(now.Year(), now.Month(), now.Day());
+    
     sevseg.setSegments(moonPhases[moonPhase]);
 
   } else if (stateDate == 1) {
