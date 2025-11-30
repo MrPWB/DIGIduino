@@ -283,7 +283,24 @@ void handleNormalMode() {
   }
 
   //Time is read once globally before displaying time, reduces flickering
-  sevseg.setNumber(timeCombined);
+  // sevseg.setNumber(timeCombined);
+
+  // Static variables for blinking logic
+  static unsigned long lastBlinkTime = 0;
+  static bool blinkOn = false;
+
+  // Toggle blink state every 500ms
+  if (millis() - lastBlinkTime >= 500) {
+    blinkOn = !blinkOn;
+    lastBlinkTime = millis();
+  }
+
+  // Display time with or without decimal point based on blink state
+  if (blinkOn) {
+    sevseg.setNumber(timeCombined, 2);  // Shows HH.MM (e.g., 12.34 for 12:34)
+  } else {
+    sevseg.setNumber(timeCombined);     // Shows HHMM (e.g., 1234 for 12:34)
+  }
 
   // Check for inactivity → sleep
   if (currentMillis - lastInteraction > WAKE_INTERVAL) {
@@ -580,7 +597,7 @@ void isrWake() {
   watchState = NORMAL;
     // Re-enable ADC (was disabled in sleep)
   ADCSRA |= (1 << ADEN);  // Set ADEN bit to enable ADC
-  
+
   now = Rtc.GetDateTime();
   hour = now.Hour();
   minute = now.Minute();
