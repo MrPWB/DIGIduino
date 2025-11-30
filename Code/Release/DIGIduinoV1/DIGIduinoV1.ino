@@ -578,6 +578,9 @@ void isrWake() {
   lastInteraction = millis();
   digitalWrite(17, HIGH);
   watchState = NORMAL;
+    // Re-enable ADC (was disabled in sleep)
+  ADCSRA |= (1 << ADEN);  // Set ADEN bit to enable ADC
+  
   now = Rtc.GetDateTime();
   hour = now.Hour();
   minute = now.Minute();
