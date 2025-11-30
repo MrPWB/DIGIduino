@@ -303,6 +303,7 @@ void handleShowDateMode() {
   int vccDisplay;
   float voltage;
   int batPerc;
+  byte moonPhase;
 
 
   if (firstEntry) {
@@ -313,7 +314,7 @@ void handleShowDateMode() {
     voltage = vccDisplay / 1000.0;
     batPerc = 25;
     // Mondphase
-    byte moonPhase = getMoonPhase(now.Year(), now.Month(), now.Day());
+    moonPhase = getMoonPhase(now.Year(), now.Month(), now.Day());
     firstEntry = false;
   }
 
