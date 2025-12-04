@@ -200,8 +200,6 @@ void setup() {
   unsigned long start = millis();
   long vccMillivolts = readVcc();
   int vccDisplay = vccMillivolts;
-  vccMillivolts = readVcc();
-  vccDisplay = vccMillivolts;
 
   while (millis() - start < 2000) {
     //sevseg.setChars("hey");
@@ -314,8 +312,8 @@ void handleNormalMode() {
 void handleShowDateMode() {
   static unsigned long lastToggleTime = 0;
   //static bool showingDate = true;
-  static int stateDate = 0;
-  static bool firstEntry = true;
+  int stateDate = 0;
+  bool firstEntry = true;
   long vccMillivolts;
   int vccDisplay;
   float voltage;
@@ -331,7 +329,7 @@ void handleShowDateMode() {
     voltage = vccDisplay / 1000.0;
     batPerc = 25;
     // Mondphase
-    moonPhase = getMoonPhase(now.Year(), now.Month(), now.Day());
+    
     firstEntry = false;
   }
 
@@ -344,7 +342,7 @@ void handleShowDateMode() {
 
   if (stateDate == 0) {
     //Moonphase
-    
+    moonPhase = getMoonPhase(now.Year(), now.Month(), now.Day());
     sevseg.setSegments(moonPhases[moonPhase]);
 
   } else if (stateDate == 1) {
