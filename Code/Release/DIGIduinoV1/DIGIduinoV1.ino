@@ -312,8 +312,8 @@ void handleNormalMode() {
 void handleShowDateMode() {
   static unsigned long lastToggleTime = 0;
   //static bool showingDate = true;
-  int stateDate = 0;
-  bool firstEntry = true;
+  static int stateDate = 0;
+  static bool firstEntry = true;
   long vccMillivolts;
   int vccDisplay;
   float voltage;
@@ -373,6 +373,7 @@ void handleShowDateMode() {
   // Button released → return to NORMAL state
   if (!minuteButton.pressed) {
     watchState = NORMAL;
+    firstEntry = true;
   }
 }
 
