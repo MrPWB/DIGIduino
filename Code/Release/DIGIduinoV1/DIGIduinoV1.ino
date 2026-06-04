@@ -198,7 +198,7 @@ void setup() {
                disableDecPoint);
 
   // Set a default brightness
-  sevseg.setBrightness(100);
+  sevseg.setBrightness(60);
 
   // ------------------ RTC Setup ------------------
   Rtc.Begin();
@@ -297,7 +297,24 @@ void handleNormalMode() {
   }
 
   //Time is read once globally before displaying time, reduces flickering
-  sevseg.setNumber(timeCombined);
+  // sevseg.setNumber(timeCombined);
+
+  // Static variables for blinking logic
+  static unsigned long lastBlinkTime = 0;
+  static bool blinkOn = false;
+
+  // Toggle blink state every 500ms
+  if (millis() - lastBlinkTime >= 500) {
+    blinkOn = !blinkOn;
+    lastBlinkTime = millis();
+  }
+
+  // Display time with or without decimal point based on blink state
+  if (blinkOn) {
+    sevseg.setNumber(timeCombined, 2);  // Shows HH.MM (e.g., 12.34 for 12:34)
+  } else {
+    sevseg.setNumber(timeCombined);     // Shows HHMM (e.g., 1234 for 12:34)
+  }
 
   // Check for inactivity → sleep
   if (currentMillis - lastInteraction > WAKE_INTERVAL) {
@@ -310,75 +327,69 @@ void handleNormalMode() {
 // ----------------------------------------------------------
 void handleShowDateMode() {
   static unsigned long lastToggleTime = 0;
-  static unsigned long lastVccSample = 0;
+  //static bool showingDate = true;
   static int stateDate = 0;
   static bool firstEntry = true;
-  static long vccMillivolts = 0;
-  static int vccDisplay = 0;
-  static int batPerc = 0;
+  long vccMillivolts;
+  int vccDisplay;
+  float voltage;
+  int batPerc;
+  byte moonPhase;
 
-  unsigned long currentMillis = millis();
 
   if (firstEntry) {
-    now = Rtc.GetDateTime();  // Take a fresh snapshot on entry
-    stateDate = 0;
-    lastToggleTime = currentMillis;
-    lastVccSample = 0;  // Force an immediate voltage sample
+    now = Rtc.GetDateTime();  // Refresh only once on entry
+    // Batterie
+    vccMillivolts = readVcc();
+    vccDisplay = vccMillivolts;
+    voltage = vccDisplay / 1000.0;
+    batPerc = 25;
+    // Mondphase
+    
     firstEntry = false;
   }
 
-  if (lastVccSample == 0 || currentMillis - lastVccSample >= 1000) {
-    vccMillivolts = readVcc();
-    vccDisplay = vccMillivolts;
-    float voltage = vccMillivolts / 1000.0f;
-    batPerc = voltageToPercentage(voltage);
-    lastVccSample = currentMillis;
-  }
-
   // Toggle every 1000ms (1 second)
+  unsigned long currentMillis = millis();
   if (currentMillis - lastToggleTime >= 1000) {
     stateDate = (stateDate + 1) % 5;
     lastToggleTime = currentMillis;
-    if (stateDate == 0) {
-      now = Rtc.GetDateTime();  // Periodically refresh time/date while in this view
-    }
   }
 
   if (stateDate == 0) {
-    // Moonphase
-    byte moonPhase = getMoonPhase(now.Year(), now.Month(), now.Day());
+    //Moonphase
+    moonPhase = getMoonPhase(now.Year(), now.Month(), now.Day());
     sevseg.setSegments(moonPhases[moonPhase]);
 
   } else if (stateDate == 1) {
-    // Date
+    //Date
     if (UKUS == true) {
       dateCombined = (now.Day() * 100) + now.Month();
     } else {
       dateCombined = (now.Month() * 100) + now.Day();
     }
 
-    sevseg.setNumber(dateCombined, 2);
+    sevseg.setNumber(dateCombined, 2);  // 1 = leading zeros
 
   } else if (stateDate == 2) {
-    // Year
+    //Year
     yearCombined = now.Year();
-    sevseg.setNumber(yearCombined);
+    sevseg.setNumber(yearCombined);  // 1 = leading zeros
 
   } else if (stateDate == 3) {
-    // Vcc
+    //Vcc
     sevseg.setNumber(vccDisplay, 3);
 
   } else if (stateDate == 4) {
-    // Battery percentage
+    //battery percentage
+    batPerc = voltageToPercentage(voltage);
     sevseg.setNumber(batPerc);
   }
 
-  // Button released → return to NORMAL state and allow re-initialization next time
+  // Button released → return to NORMAL state
   if (!minuteButton.pressed) {
-    firstEntry = true;
-    stateDate = 0;
-    lastToggleTime = currentMillis;
     watchState = NORMAL;
+    firstEntry = true;
   }
 }
 
@@ -599,6 +610,9 @@ void isrWake() {
   lastInteraction = millis();
   digitalWrite(17, HIGH);
   watchState = NORMAL;
+    // Re-enable ADC (was disabled in sleep)
+  ADCSRA |= (1 << ADEN);  // Set ADEN bit to enable ADC
+
   now = Rtc.GetDateTime();
   hour = now.Hour();
   minute = now.Minute();
