@@ -107,14 +107,30 @@ byte getMoonPhase(int year, byte month, byte day) {
 
 long readVcc() {
   // Set up ADC to read internal 1.1V reference
-  ADMUX = (1 << REFS0) | (1 << MUX3) | (1 << MUX2) | (1 << MUX1);  // MUX[3:0]=1110, REFS0=1
-  delay(2);                                                        // Let Vref settle
-  ADCSRA |= (1 << ADSC);                                           // Start conversion
-  while (ADCSRA & (1 << ADSC))
-    ;  // Wait until done
-  int result = ADC;
-  long vcc = 1125300L / result;  // 1.1V * 1023 * 1000 (to get mV)
-  return vcc;                    // Vcc in millivolts
+  ADMUX = (1 << REFS0) | (1 << MUX3) | (1 << MUX2) | (1 << MUX1); 
+  delay(2); // Let Vref settle
+
+  // 1. Discard first dummy reading
+  ADCSRA |= (1 << ADSC);
+  while (ADCSRA & (1 << ADSC)); 
+  (void)ADC;
+
+  // 2. Take multiple readings and sum them up
+  long accumulator = 0;
+  const int numSamples = 16; 
+  
+  for (int i = 0; i < numSamples; i++) {
+    ADCSRA |= (1 << ADSC);
+    while (ADCSRA & (1 << ADSC)); 
+    accumulator += ADC;
+  }
+
+  // 3. Calculate average
+  int averageADC = accumulator / numSamples;
+
+  // 4. Calculate VCC in millivolts
+  long vcc = 1125300L / averageADC; 
+  return vcc; 
 }
 
 int voltageToPercentage(float voltage) {
