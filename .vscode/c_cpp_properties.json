@@ -1,0 +1,64 @@
+//
+// !!! WARNING !!! AUTO-GENERATED FILE!
+// PLEASE DO NOT MODIFY IT AND USE "platformio.ini":
+// https://docs.platformio.org/page/projectconf/section_env_build.html#build-flags
+//
+{
+    "configurations": [
+        {
+            "name": "PlatformIO",
+            "includePath": [
+                "/home/hellhammer/github/DIGIduino_PlatIO_Test/src",
+                "/home/hellhammer/github/DIGIduino_PlatIO_Test/.pio/libdeps/ATmega328/RTC/src",
+                "/home/hellhammer/github/DIGIduino_PlatIO_Test/.pio/libdeps/ATmega328/SevSeg",
+                "/home/hellhammer/.platformio/packages/framework-arduino-avr-minicore/cores/MiniCore",
+                "/home/hellhammer/.platformio/packages/framework-arduino-avr-minicore/variants/standard",
+                "/home/hellhammer/.platformio/packages/framework-arduino-avr-minicore/libraries/AVR_examples/src",
+                "/home/hellhammer/.platformio/packages/framework-arduino-avr-minicore/libraries/EEPROM/src",
+                "/home/hellhammer/.platformio/packages/framework-arduino-avr-minicore/libraries/Flash/src",
+                "/home/hellhammer/.platformio/packages/framework-arduino-avr-minicore/libraries/SPI/src",
+                "/home/hellhammer/.platformio/packages/framework-arduino-avr-minicore/libraries/SPI1/src",
+                "/home/hellhammer/.platformio/packages/framework-arduino-avr-minicore/libraries/SoftwareSerial/src",
+                "/home/hellhammer/.platformio/packages/framework-arduino-avr-minicore/libraries/Wire/src",
+                "/home/hellhammer/.platformio/packages/framework-arduino-avr-minicore/libraries/Wire1/src",
+                ""
+            ],
+            "browse": {
+                "limitSymbolsToIncludedHeaders": true,
+                "path": [
+                    "/home/hellhammer/github/DIGIduino_PlatIO_Test/src",
+                    "/home/hellhammer/github/DIGIduino_PlatIO_Test/.pio/libdeps/ATmega328/RTC/src",
+                    "/home/hellhammer/github/DIGIduino_PlatIO_Test/.pio/libdeps/ATmega328/SevSeg",
+                    "/home/hellhammer/.platformio/packages/framework-arduino-avr-minicore/cores/MiniCore",
+                    "/home/hellhammer/.platformio/packages/framework-arduino-avr-minicore/variants/standard",
+                    "/home/hellhammer/.platformio/packages/framework-arduino-avr-minicore/libraries/AVR_examples/src",
+                    "/home/hellhammer/.platformio/packages/framework-arduino-avr-minicore/libraries/EEPROM/src",
+                    "/home/hellhammer/.platformio/packages/framework-arduino-avr-minicore/libraries/Flash/src",
+                    "/home/hellhammer/.platformio/packages/framework-arduino-avr-minicore/libraries/SPI/src",
+                    "/home/hellhammer/.platformio/packages/framework-arduino-avr-minicore/libraries/SPI1/src",
+                    "/home/hellhammer/.platformio/packages/framework-arduino-avr-minicore/libraries/SoftwareSerial/src",
+                    "/home/hellhammer/.platformio/packages/framework-arduino-avr-minicore/libraries/Wire/src",
+                    "/home/hellhammer/.platformio/packages/framework-arduino-avr-minicore/libraries/Wire1/src",
+                    ""
+                ]
+            },
+            "defines": [
+                "PLATFORMIO=60119",
+                "ARDUINO_AVR_ATmega328",
+                "F_CPU=16000000L",
+                "ARDUINO_ARCH_AVR",
+                "ARDUINO=10808",
+                "__AVR_ATmega328__",
+                ""
+            ],
+            "cStandard": "gnu11",
+            "cppStandard": "gnu++17",
+            "compilerPath": "/home/hellhammer/.platformio/packages/toolchain-atmelavr/bin/avr-gcc",
+            "compilerArgs": [
+                "-mmcu=atmega328",
+                ""
+            ]
+        }
+    ],
+    "version": 4
+}
