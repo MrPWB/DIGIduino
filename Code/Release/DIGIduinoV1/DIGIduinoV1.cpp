@@ -11,12 +11,32 @@
 //#include "LowPower.h"
 #include "RtcDS1302.h"
 
+
+
 // ------------------ RTC Setup ------------------
 ThreeWire myWire(14, 15, 16);  // IO (DATA), SCLK (CLK), CE (RST)
 RtcDS1302<ThreeWire> Rtc(myWire);
 
 // ------------------ SevSeg Setup ------------------
 SevSeg sevseg;
+
+// ------------------ Function Prototypes ------------------
+byte getMoonPhase(int year, byte month, byte day);
+long readVcc();
+int voltageToPercentage(float voltage);
+void handleNormalMode();
+void handleShowDateMode();
+void handleShowSetMode();
+void handleTimeSetMode();
+void handleShowDSetMode();
+void handleDateSetMode();
+void handleYearSetMode();
+void handleUKUSSetMode();
+void goToSleep();
+void isrWake();
+void updateBrightness();
+void buttonInit(struct Button* button);
+void buttonUpdateState(struct Button* button);
 
 // ------------------ Times & Delays ------------------
 const unsigned long WAKE_INTERVAL = 8000;  // Display active for 8s if no further interaction
