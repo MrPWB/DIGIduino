@@ -222,9 +222,24 @@ void setup() {
 
   // ------------------ RTC Setup ------------------
   Rtc.Begin();
-  // Set the RTC to compile time ONCE at startup (remove if not desired):
+
   RtcDateTime compiled = RtcDateTime(__DATE__, __TIME__);
-  Rtc.SetDateTime(compiled);
+
+  if (Rtc.GetIsWriteProtected()) {
+    Rtc.SetIsWriteProtected(false);  // SetDateTime() is ignored while protected
+  }
+  if (!Rtc.GetIsRunning()) {
+    Rtc.SetIsRunning(true);  // clock-halt bit is set on a fresh DS1302
+  }
+
+  // Seed from the build timestamp only if the RTC has actually lost time:
+  // either the registers are nonsense, or the backup cell died and left a
+  // date that predates this firmware. Neither can be the current time.
+  // Anything else is kept, so a reset no longer wipes the running clock.
+  RtcDateTime stored = Rtc.GetDateTime();
+  if (!stored.IsValid() || stored < compiled) {
+    Rtc.SetDateTime(compiled);
+  }
 
   // ------------------ RTC Setup ------------------
   // Disable any unused pins
