@@ -1,1 +1,4 @@
 .aider*
+
+# Rechner-/OS-spezifische PlatformIO-Overrides (z. B. upload_port)
+*.local.ini
